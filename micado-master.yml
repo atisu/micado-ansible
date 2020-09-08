@@ -109,10 +109,10 @@
       - start
 
   roles:
-    - role: build-micado-master
+    - role: micado_master/build
       tags:
       - build
-    - role: start-micado-master
+    - role: micado_master/start
       tags:
       - start
 
@@ -127,7 +127,7 @@
     - oci_key_path: ./credentials-oci-key.pem
     - docker_cred_path: ./credentials-docker-registry.yml
     - micado_cred_path: ./credentials-micado.yml
-    - micado_version: v0.9.0
+    - micado_version: v0.9.1-rc
 
     - disable_optimizer: True
     - disable_worker_updates: True
@@ -149,42 +149,42 @@
     - intel_cpu: false
 
     - docker_images:
-        alertmanager: prom/alertmanager:v0.20.0
-        cadvisor: gcr.io/google-containers/cadvisor:v0.34.0
+        alertmanager: prom/alertmanager:v0.21.0
+        cadvisor: gcr.io/google-containers/cadvisor:v0.36.0
         credential_manager: micado/credential-manager:alpine
         crypto_engine: micado/crypto-engine:alpine
         dashboard: micado/dashboard:0.4.0
-        grafana: grafana/grafana:6.6.2
-        iivr: micado/iivr:alpine
-        node_exporter: prom/node-exporter:v0.18.1
+        grafana: grafana/grafana:7.1.5
+        iivr: micado/iivr:slim
+        node_exporter: prom/node-exporter:v1.0.1
         occopus: micado/occopus:1.7-rc6
         optimizer: micado/optimizer:v0.8.0
         policykeeper: micado/policykeeper:alpine
-        prometheus: prom/prometheus:v2.16.0
+        prometheus: prom/prometheus:v2.20.1
         redis: redis:5-alpine
         securitypolicymanager: micado/security-policy-manager:alpine
-        terraform: hashicorp/terraform:0.12.21
-        toscasubmitter: micado/toscasubmitter:edge
-        vault: vault:1.0.3
+        terraform: hashicorp/terraform:0.13.2
+        toscasubmitter: micado/toscasubmitter:alpine
+        vault: vault:1.5.3
         zorp: micado/zorpgpl:6.0.12
 
     - packages:
         docker_ce: "docker-ce=5:19.03.12~3-0~ubuntu-{{ ansible_distribution_release }}"
         docker_ce_cli: "docker-ce-cli=5:19.03.12~3-0~ubuntu-{{ ansible_distribution_release }}"
         containerd_io: containerd.io=1.2.13-2
-        kubernetes_version: 1.18.5-00
+        kubernetes_version: 1.19.0-00
 
 - name: Setup KubeEdge (Cloud-core)
   hosts: micado-target
 
   roles:
-    - role: micado-edge-start
+    - role: micado_edge_start
       tags:
       - edge
 
   vars:
     - packages:
-        kube_edge: "1.2.1"
+        kube_edge: "1.4.0"
 
 - name: Setup KubeEdge (Edge-core)
   hosts: edgenodes
@@ -219,7 +219,7 @@
       - edge
 
   roles:
-    - role: micado-edge-join
+    - role: micado_edge_join
       tags:
       - edge
 
@@ -228,4 +228,5 @@
         docker_ce: "docker-ce=5:19.03.12~3-0~ubuntu-{{ ansible_distribution_release }}"
         docker_ce_cli: "docker-ce-cli=5:19.03.12~3-0~ubuntu-{{ ansible_distribution_release }}"
         containerd_io: containerd.io=1.2.13-2
-        kube_edge: "1.2.1"
+        kube_edge: "1.4.0"
+
